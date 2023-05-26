@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulação</title>
+    <style>
+        * {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 50px;
+        }
+        .cpus--filas {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 75px;
+            padding-left: 5%;
+            padding-right: 5%
+        }
+        .cpus {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-column-gap: 10px;
+            grid-row-gap: 10px;
+        }
+        .cpu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .tabela_escalonamento {
+            text-indent: initial;
+            border-collapse: collapse;
+            pointer-events: none;
+        }
+        .tabela_escalonamento th, td {
+            border: 1px solid #282A35;
+            width: 30px;
+            height: 30px;
+            font-size: 16px;
+        }
+        .tabela_escalonamento td.preenchido {
+            background-color: red;
+        }
+        .filas-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 25px;
+            width: 500px;
+            height: 275px;
+            border: 2px dotted #282A35;
+            border-radius: 5px;
+        }
+        .fila-container {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+        .fila-container > p {
+            text-align: end;
+            width: 100px;
+        }
+        .filas {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .fila {
+            display: flex;
+            align-items: center;
+            height: 30px;
+            pointer-events: none;
+        }
+        .fila .processo_fila {
+            width: 60px;
+            height: 100%;
+            border: 1px solid #282A35;  
+            background-color: aquamarine;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Escalonador de Processos</h1>
+        <section class="cpus--filas">
+            <section class="cpus-container">
+                <h2>CPUs</h2>
+                <div class="cpus">
+                    <div class="cpu" id="cpu_1">
+                        <h3>CPU 1:</h3>
+                        <table class="tabela_escalonamento p1">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="cpu" id="cpu_2">
+                        <h3>CPU 2:</h3>
+                        <table class="tabela_escalonamento p1">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="cpu" id="cpu_3">
+                        <h3>CPU 3:</h3>
+                        <table class="tabela_escalonamento p1">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="cpu" id="cpu_4">
+                        <h3>CPU 4:</h3>
+                        <table class="tabela_escalonamento p1">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            <section class="filas">
+                <h2>Filas</h2>
+                <div class="filas-container">
+                    <div class="fila-container">
+                        <p>I/O:</p>
+                        <div class="fila" id="fila_io">
+                        </div>
+                    </div>
+                    <div class="fila-container">
+                        <p>Prioridade 0:</p>
+                        <div class="fila" id="fila_real">
+                            <div class="processo_fila">P1</div>
+                        </div>
+                    </div>
+                    <div class="fila-container">
+                        <p>Prioridade 1:</p>
+                        <div class="filas" id="filas_usuario">
+                            <div class="fila">
+                            </div>
+                            <div class="fila">
+                            </div>
+                            <div class="fila">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </section>
+        <section class="controle">
+            <button onclick="voltar()">Voltar</button>
+            <button onclick="avancar()">Avançar</button>
+        </section>
+    </main>
+    <script>
+        const { processos, timeline } = {
+            processos: ["P1", "P2", "P3", "P5"],
+            timeline: [
+                {
+                    eventos: [],
+                    cpus: [
+                        ["P1"],
+                        ["P2"],
+                        ["P3"],
+                        ["P4"],
+                    ],
+                    filas: {
+                        io: [],
+                        p0: [],
+                        p1: [[], [], []] ,
+                    },
+                },
+                {
+                    eventos: [],
+                    cpus: [
+                        ["P1", "P1"],
+                        ["P2", "P2"],
+                        ["P3", "P3"],
+                        ["P4", "P4"],
+                    ],
+                    filas: {
+                        io: [],
+                        p0: [],
+                        p1: [["P5"], [], []] ,
+                    },
+                },
+                {
+                    eventos: [],
+                    cpus: [
+                        ["P1", "P1", "P5"],
+                        ["P2", "P2", "P2"],
+                        ["P3", "P3", ""],
+                        ["P4", "P4", "P4"],
+                    ],
+                    filas: {
+                        io: [],
+                        p0: [],
+                        p1: [[], [], []] ,
+                    },
+                },
+            ]
+        }
+        let momentoAtual = -1
+        const tempoTotal = timeline.length
+
+        const cpusElement = document.querySelector(".cpus")
+        const filaIoElement = document.querySelector("#fila_io")
+        const filaRealElement = document.querySelector("#fila_real")
+        const filasUsuarioElement = document.querySelector("#filas_usuario")
+        
+        for(const cpuElement of cpusElement.children) {
+            criarTimeline(cpuElement)
+            criarProcessos(cpuElement)
+            criarQuadrados(cpuElement)
+        }
+        atualizarSimulacao()
+
+        function avancar() {
+            if(momentoAtual < tempoTotal - 1) {
+                momentoAtual++
+                atualizarSimulacao()
+            }
+        }
+
+        function voltar() {
+            if(momentoAtual >= 0) {
+                momentoAtual--
+                atualizarSimulacao()
+            }
+        }
+
+        function atualizarSimulacao() {
+            if(momentoAtual < 0) {
+                limparSimulacao()
+                return
+            }
+            const dados = timeline[momentoAtual]
+            atualizarCpus(dados)
+            atualizarFilas(dados)
+        }
+
+        function limparSimulacao() {
+            for(let i = 0; i < 4; i++) {
+                limparLinha(i, cpusElement.children[i])
+            }
+            limparFila(filaIoElement)
+            limparFila(filaRealElement)
+            for(let filaIndex = 0; filaIndex < filasUsuarioElement.children.length; filaIndex++) {
+                const filaUsuarioElement = filasUsuarioElement.children[filaIndex]
+                limparFila(filaUsuarioElement)
+            }
+        }
+
+        function atualizarCpus(dados) {
+            for(let i = 0; i < 4; i++) {
+                limparLinha(i, cpusElement.children[i])
+                let processosCpu = dados.cpus[i]
+                processosCpu.forEach((processo, indexProcesso) => {
+                    const processoElement = buscarProcessoElement(processo, cpusElement.children[i])
+                    processoElement.parentElement.children[indexProcesso+1].className = "preenchido"
+                })
+            }
+        }
+
+        function atualizarFilas(dados) {
+            const { io, p0, p1 } = dados.filas
+            limparFila(filaIoElement)
+            io.forEach(processo => filaIoElement.appendChild(criarProcessoFilaElement(processo)))
+            
+            limparFila(filaRealElement)
+            p0.forEach(processo => filaRealElement.appendChild(criarProcessoFilaElement(processo)))    
+        
+            for(let filaIndex = 0; filaIndex < filasUsuarioElement.children.length; filaIndex++) {
+                const filaUsuarioElement = filasUsuarioElement.children[filaIndex]
+                limparFila(filaUsuarioElement)
+                p1[filaIndex].forEach(processo => filaUsuarioElement.appendChild(criarProcessoFilaElement(processo)))    
+            }
+        }
+
+        function limparFila(filaElement) {
+            filaElement.replaceChildren([])
+        }
+
+        function criarProcessoFilaElement(processo) {
+            const processoFilaElement = document.createElement("div")
+            processoFilaElement.className = "processo_fila"
+            processoFilaElement.innerText = processo
+            return processoFilaElement
+        }
+
+        function buscarProcessoElement(processo, cpuElement) {
+            const xpath = `.//th[text()="${processo}"]`
+            return document.evaluate(
+                xpath,
+                cpuElement,
+                null,
+                XPathResult.FIRST_ORDERED_NODE_TYPE
+            )
+            .singleNodeValue
+        }
+
+        function limparLinha(linha, cpuElement) {
+            const cpuTableBodyElement = cpuElement.querySelector("tbody")
+            for(const cpuTableBodyRowElement of cpuTableBodyElement.children) {
+                for(let i = 0; i <= tempoTotal; i++) {
+                    cpuTableBodyRowElement.children[i].className = ""
+                }
+            }    
+        }
+        
+        function criarTimeline(cpuElement) {
+            const cpuTableHeadRowElement = cpuElement.querySelector("thead tr")
+            for(let i = 1; i <= tempoTotal; i++) {
+                cpuTableHeadRowElement.appendChild(criarCelulaTabela("th", i))
+            }
+        }
+        
+        function criarProcessos(cpuElement) {
+            const cpuTableBodyElement = cpuElement.querySelector("tbody")
+            processos.forEach(processo => {
+                const trElement = document.createElement("tr")
+                trElement.appendChild(criarCelulaTabela("th", processo))
+                cpuTableBodyElement.appendChild(trElement)
+            })
+        }
+        
+        function criarQuadrados(cpuElement) {
+            const cpuTableBodyElement = cpuElement.querySelector("tbody")
+            for(const cpuTableBodyRowElement of cpuTableBodyElement.children) {
+                for(let i = 1; i <= tempoTotal; i++) {
+                    cpuTableBodyRowElement.appendChild(criarCelulaTabela("td", ""))
+                }
+            }
+        }
+
+        function criarCelulaTabela(tipo, texto) {
+            const thElement = document.createElement(tipo)
+            thElement.innerText = texto
+            return thElement
+        }
+    </script>
+</body>
+</html>
