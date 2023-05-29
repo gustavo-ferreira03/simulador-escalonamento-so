@@ -1,5 +1,3 @@
-package main;
-
 import relatorio.Relatorio;
 
 public class Main {
