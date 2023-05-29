@@ -41,7 +41,7 @@ public class Relatorio {
         template = formatTemplate(template);
 
         String data = new SimpleDateFormat("yyyy-MM-dd-HH_mm_ss").format(new Date());
-        String nomeArquivo = "./simulacoes/relatorio-" + data  +".html";
+        String nomeArquivo = "./simulacoes/relatorio-" + data  + ".html";
         try {
             FileWriter writer = new FileWriter(nomeArquivo);
             writer.write(template);
@@ -69,7 +69,7 @@ public class Relatorio {
         try {
             Scanner reader = new Scanner(templateFile);
             while (reader.hasNextLine()) {
-                template.append(reader.nextLine() + "\n");
+                template.append(reader.nextLine().strip());
             }
             reader.close();
         }
