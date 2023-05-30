@@ -9,7 +9,7 @@
         * {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        main {
+        simulador {
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -181,144 +181,144 @@
         </section>
     </main>
     <script>
-        const { processos, timeline } = <%= relatorioJson %>
-        let momentoAtual = -1
-        const tempoTotal = timeline.length
+        const { processos, timeline } = <%= relatorioJson %>;
+        let momentoAtual = -1;
+        const tempoTotal = timeline.length;
 
-        const cpusElement = document.querySelector(".cpus")
-        const filaIoElement = document.querySelector("#fila_io")
-        const filaRealElement = document.querySelector("#fila_real")
-        const filasUsuarioElement = document.querySelector("#filas_usuario")
-        
+        const cpusElement = document.querySelector(".cpus");
+        const filaIoElement = document.querySelector("#fila_io");
+        const filaRealElement = document.querySelector("#fila_real");
+        const filasUsuarioElement = document.querySelector("#filas_usuario");
+
         for(const cpuElement of cpusElement.children) {
-            criarTimeline(cpuElement)
-            criarProcessos(cpuElement)
-            criarQuadrados(cpuElement)
+            criarTimeline(cpuElement);
+            criarProcessos(cpuElement);
+            criarQuadrados(cpuElement);
         }
-        atualizarSimulacao()
+        atualizarSimulacao();
 
         function avancar() {
             if(momentoAtual < tempoTotal - 1) {
-                momentoAtual++
-                atualizarSimulacao()
+                momentoAtual++;
+                atualizarSimulacao();
             }
         }
 
         function voltar() {
             if(momentoAtual >= 0) {
-                momentoAtual--
-                atualizarSimulacao()
+                momentoAtual--;
+                atualizarSimulacao();
             }
         }
 
         function atualizarSimulacao() {
             if(momentoAtual < 0) {
-                limparSimulacao()
-                return
+                limparSimulacao();
+                return;
             }
-            const dados = timeline[momentoAtual]
-            atualizarCpus(dados)
-            atualizarFilas(dados)
+            const dados = timeline[momentoAtual];
+            atualizarCpus(dados);
+            atualizarFilas(dados);
         }
 
         function limparSimulacao() {
             for(let i = 0; i < 4; i++) {
-                limparLinha(i, cpusElement.children[i])
+                limparLinha(i, cpusElement.children[i]);
             }
-            limparFila(filaIoElement)
-            limparFila(filaRealElement)
+            limparFila(filaIoElement);
+            limparFila(filaRealElement);
             for(let filaIndex = 0; filaIndex < filasUsuarioElement.children.length; filaIndex++) {
-                const filaUsuarioElement = filasUsuarioElement.children[filaIndex]
-                limparFila(filaUsuarioElement)
+                const filaUsuarioElement = filasUsuarioElement.children[filaIndex];
+                limparFila(filaUsuarioElement);
             }
         }
 
         function atualizarCpus(dados) {
             for(let i = 0; i < 4; i++) {
-                limparLinha(i, cpusElement.children[i])
-                let processosCpu = dados.cpus[i]
+                limparLinha(i, cpusElement.children[i]);
+                let processosCpu = dados.cpus[i];
                 processosCpu.forEach((processo, indexProcesso) => {
-                    const processoElement = buscarProcessoElement(processo, cpusElement.children[i])
-                    processoElement.parentElement.children[indexProcesso+1].className = "preenchido"
-                })
+                    const processoElement = buscarProcessoElement(processo, cpusElement.children[i]);
+                    processoElement.parentElement.children[indexProcesso+1].className = "preenchido";
+                });
             }
         }
 
         function atualizarFilas(dados) {
-            const { io, p0, p1 } = dados.filas
-            limparFila(filaIoElement)
-            io.forEach(processo => filaIoElement.appendChild(criarProcessoFilaElement(processo)))
-            
-            limparFila(filaRealElement)
-            p0.forEach(processo => filaRealElement.appendChild(criarProcessoFilaElement(processo)))    
-        
+            const { io, p0, p1 } = dados.filas;
+            limparFila(filaIoElement);
+            io.forEach(processo => filaIoElement.appendChild(criarProcessoFilaElement(processo)));
+
+            limparFila(filaRealElement);
+            p0.forEach(processo => filaRealElement.appendChild(criarProcessoFilaElement(processo)));
+
             for(let filaIndex = 0; filaIndex < filasUsuarioElement.children.length; filaIndex++) {
-                const filaUsuarioElement = filasUsuarioElement.children[filaIndex]
-                limparFila(filaUsuarioElement)
-                p1[filaIndex].forEach(processo => filaUsuarioElement.appendChild(criarProcessoFilaElement(processo)))    
+                const filaUsuarioElement = filasUsuarioElement.children[filaIndex];
+                limparFila(filaUsuarioElement);
+                p1[filaIndex].forEach(processo => filaUsuarioElement.appendChild(criarProcessoFilaElement(processo)));
             }
         }
 
         function limparFila(filaElement) {
-            filaElement.replaceChildren([])
+            filaElement.replaceChildren([]);
         }
 
         function criarProcessoFilaElement(processo) {
-            const processoFilaElement = document.createElement("div")
-            processoFilaElement.className = "processo_fila"
-            processoFilaElement.innerText = processo
-            return processoFilaElement
+            const processoFilaElement = document.createElement("div");
+            processoFilaElement.className = "processo_fila";
+            processoFilaElement.innerText = processo;
+            return processoFilaElement;
         }
 
         function buscarProcessoElement(processo, cpuElement) {
-            const xpath = `.//th[text()="${processo}"]`
+            const xpath = `.//th[text()="${processo}"]`;
             return document.evaluate(
                 xpath,
                 cpuElement,
                 null,
                 XPathResult.FIRST_ORDERED_NODE_TYPE
             )
-            .singleNodeValue
+            .singleNodeValue;
         }
 
         function limparLinha(linha, cpuElement) {
-            const cpuTableBodyElement = cpuElement.querySelector("tbody")
+            const cpuTableBodyElement = cpuElement.querySelector("tbody");
             for(const cpuTableBodyRowElement of cpuTableBodyElement.children) {
                 for(let i = 0; i <= tempoTotal; i++) {
-                    cpuTableBodyRowElement.children[i].className = ""
+                    cpuTableBodyRowElement.children[i].className = "";
                 }
-            }    
-        }
-        
-        function criarTimeline(cpuElement) {
-            const cpuTableHeadRowElement = cpuElement.querySelector("thead tr")
-            for(let i = 1; i <= tempoTotal; i++) {
-                cpuTableHeadRowElement.appendChild(criarCelulaTabela("th", i))
             }
         }
-        
-        function criarProcessos(cpuElement) {
-            const cpuTableBodyElement = cpuElement.querySelector("tbody")
-            processos.forEach(processo => {
-                const trElement = document.createElement("tr")
-                trElement.appendChild(criarCelulaTabela("th", processo))
-                cpuTableBodyElement.appendChild(trElement)
-            })
+
+        function criarTimeline(cpuElement) {
+            const cpuTableHeadRowElement = cpuElement.querySelector("thead tr");
+            for(let i = 1; i <= tempoTotal; i++) {
+                cpuTableHeadRowElement.appendChild(criarCelulaTabela("th", i));
+            }
         }
-        
+
+        function criarProcessos(cpuElement) {
+            const cpuTableBodyElement = cpuElement.querySelector("tbody");
+            processos.forEach(processo => {
+                const trElement = document.createElement("tr");
+                trElement.appendChild(criarCelulaTabela("th", processo));
+                cpuTableBodyElement.appendChild(trElement);
+            });
+        }
+
         function criarQuadrados(cpuElement) {
-            const cpuTableBodyElement = cpuElement.querySelector("tbody")
+            const cpuTableBodyElement = cpuElement.querySelector("tbody");
             for(const cpuTableBodyRowElement of cpuTableBodyElement.children) {
                 for(let i = 1; i <= tempoTotal; i++) {
-                    cpuTableBodyRowElement.appendChild(criarCelulaTabela("td", ""))
+                    cpuTableBodyRowElement.appendChild(criarCelulaTabela("td", ""));
                 }
             }
         }
 
         function criarCelulaTabela(tipo, texto) {
-            const thElement = document.createElement(tipo)
-            thElement.innerText = texto
-            return thElement
+            const thElement = document.createElement(tipo);
+            thElement.innerText = texto;
+            return thElement;
         }
     </script>
 </body>
