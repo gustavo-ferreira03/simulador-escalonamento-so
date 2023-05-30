@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -14,25 +13,29 @@ public class Relatorio {
     private final Gson gson = new Gson();
     private static Relatorio instance = null;
     private ArrayList<String> processos;
-    private ArrayList<BlocoRelatorio> timeline;
+    private ArrayList<BlocoTimeline> timeline;
 
-    private Relatorio() {
+    public Relatorio() {
         this.processos = new ArrayList<String>();
-        this.timeline = new ArrayList<BlocoRelatorio>();
-    }
-
-    public static Relatorio getInstance() {
-        if(instance == null) {
-            instance = new Relatorio();
-        }
-        return instance;
+        this.timeline = new ArrayList<BlocoTimeline>();
     }
 
     public void addProcesso(String processo) {
         this.processos.add(processo);
     }
 
-    public ArrayList<BlocoRelatorio> getTimeline() {
+    public void addBlocoTimeline(BlocoTimeline bloco) {
+        this.timeline.add(bloco);
+    }
+
+    public BlocoTimeline getBlocoTimelineAtual() {
+        if(this.timeline.size() == 0) {
+            return null;
+        }
+        return this.timeline.get(this.timeline.size() - 1);
+    }
+
+    public ArrayList<BlocoTimeline> getTimeline() {
         return timeline;
     }
 
