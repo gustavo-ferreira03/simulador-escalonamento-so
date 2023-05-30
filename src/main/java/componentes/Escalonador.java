@@ -1,17 +1,21 @@
 package componentes;
 
+import relatorio.FilasRelatorio;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 
 public class Escalonador {
+    private SistemaOperacional so;
     private int quantum;
     private Queue<Processo> filaIo;
     private Queue<Processo> filaReal;
     private List<Queue<Processo>> filasUsuario;
 
-    Escalonador(int quantum) {
+    Escalonador(SistemaOperacional so, int quantum) {
+        this.so = so;
         this.quantum = quantum;
         this.filaIo = new ArrayDeque<>();
         this.filaReal = new ArrayDeque<>();
@@ -57,5 +61,16 @@ public class Escalonador {
             }
         }
         return null;
+    }
+
+    public void registrarFilasRelatorio() {
+        FilasRelatorio filasRelatorio = this.so.getRelatorio().getBlocoTimelineAtual().getFilas();
+        filasRelatorio.setIo(new ArrayList<>());
+        filasRelatorio.setP0(this.filaReal.stream().map(Processo::getNome).toList());
+        List<List<String>> p1 = new ArrayList<List<String>>();
+        for(Queue<Processo> filaUsuario : filasUsuario) {
+            p1.add(filaUsuario.stream().map(Processo::getNome).toList());
+        }
+        filasRelatorio.setP1(p1);
     }
 }
