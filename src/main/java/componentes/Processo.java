@@ -1,6 +1,7 @@
 package componentes;
 
 public class Processo {
+    private String nome;
     private int tempoChegada;
     private Prioridade prioridade;
     private int tempoCPU;
@@ -11,7 +12,8 @@ public class Processo {
     private int inicioIO;
     private int rq;
 
-    public Processo(int tempoChegada, Prioridade prioridade, int tempoCPU, int tamanho, int disco, int inicioIO, int duracaoIO) {
+    public Processo(String nome, int tempoChegada, Prioridade prioridade, int tempoCPU, int tamanho, int disco, int inicioIO, int duracaoIO) {
+        this.nome = nome;
         this.tempoChegada = tempoChegada;
         this.prioridade = prioridade;
         this.tempoCPU = tempoCPU;
@@ -20,6 +22,10 @@ public class Processo {
         this.inicioIO = inicioIO;
         this.duracaoIO = duracaoIO;
         this.rq = -1;
+    }
+
+    public String getNome() {
+        return nome;
     }
 
     public int getTempoChegada() {

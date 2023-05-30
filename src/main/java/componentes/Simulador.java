@@ -1,19 +1,24 @@
 
 package componentes;
 
+import relatorio.BlocoTimeline;
+import relatorio.Relatorio;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
 public class Simulador {
+    private Relatorio relatorio;
     private SistemaOperacional so;
     private List<Processo> processos;
     private Cpu[] cpus;
-    int tempoDecorrido;
+    private int tempoDecorrido;
 
     public Simulador(String arquivoEntrada) {
-        this.so = new SistemaOperacional();
+        this.relatorio = new Relatorio();
+        this.so = new SistemaOperacional(relatorio);
         this.processos = lerEntradas(arquivoEntrada);
         this.cpus = new Cpu[4];
         for(int i = 0; i < cpus.length; i++) this.cpus[i] = new Cpu(so);
@@ -22,7 +27,9 @@ public class Simulador {
 
     public void iniciar() {
         while(true) {
-            System.out.println(this.tempoDecorrido);
+            System.out.println("INSTANTE ATUAL: " + this.tempoDecorrido);
+            this.relatorio.addBlocoTimeline(new BlocoTimeline(this.relatorio.getBlocoTimelineAtual()));
+
             for(Processo processo : processos) {
                 if(processo.getTempoChegada() == this.tempoDecorrido) {
                     so.getEscalonador().adicionarProcesso(processo);
@@ -31,11 +38,14 @@ public class Simulador {
             for(Cpu cpu : cpus) {
                 cpu.executar();
             }
+            this.so.getEscalonador().registrarFilasRelatorio();
             if(verificarFimSimulacao()) {
                 break;
             }
             this.tempoDecorrido++;
         }
+        System.out.println("GERANDO RELATORIO");
+        this.relatorio.gerarRelatorio();
     }
 
     private boolean verificarFimSimulacao() {
@@ -67,11 +77,15 @@ public class Simulador {
         List<Processo> processos = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(arquivo))) {
             String line;
+            int i = 1;
             while ((line = br.readLine()) != null) {
-                List<Integer> numbers = Arrays.stream(line.split(",\\s*")).map(Integer::parseInt).toList();
+                String nomeProcesso = "P" + i++;
+                this.relatorio.addProcesso(nomeProcesso);
 
+                List<Integer> numbers = Arrays.stream(line.split(",\\s*")).map(Integer::parseInt).toList();
                 if (numbers.size() == 7) {
                     Processo p = new Processo(
+                        nomeProcesso,
                         numbers.get(0),
                         Prioridade.values()[numbers.get(1)],
                         numbers.get(2),

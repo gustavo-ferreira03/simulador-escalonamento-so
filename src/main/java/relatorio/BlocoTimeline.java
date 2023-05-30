@@ -1,16 +1,13 @@
 package relatorio;
 
 import componentes.Escalonador;
-import componentes.Processo;
-import componentes.SistemaOperacional;
 
-import java.util.*;
+import java.util.ArrayList;
 
 public class BlocoTimeline {
     private ArrayList<String>[] cpus;
     private FilasRelatorio filas;
-    Map<String, ProgressoRelatorio> progresso;
-    private ArrayList<String> eventos;
+    private ProgressoRelatorio progresso;
 
     public BlocoTimeline(BlocoTimeline blocoAnterior) {
         this.cpus = new ArrayList[4];
@@ -22,13 +19,9 @@ public class BlocoTimeline {
                 this.cpus[i] = (ArrayList<String>) blocoAnterior.getCpus()[i].clone();
             }
         }
-        this.filas = new FilasRelatorio();
-        this.progresso = new HashMap<>();
-        this.eventos = new ArrayList<String>();
-    }
 
-    void addEvento(String evento) {
-        this.eventos.add(evento);
+        this.filas = new FilasRelatorio();
+        this.progresso = new ProgressoRelatorio();
     }
 
     public ArrayList<String>[] getCpus() {
@@ -43,17 +36,7 @@ public class BlocoTimeline {
         return filas;
     }
 
-    public void registrarFilas(SistemaOperacional so) {
-        filas.setIo(so.getFilaIo().stream().map(Processo::getNome).toList());
-        filas.setP0(so.getEscalonador().getFilaReal().stream().map(Processo::getNome).toList());
-        List<List<String>> p1 = new ArrayList<List<String>>();
-        for(Queue<Processo> filaUsuario : so.getEscalonador().getFilasUsuario()) {
-            p1.add(filaUsuario.stream().map(Processo::getNome).toList());
-        }
-        filas.setP1(p1);
-    }
-
-    public Map<String, ProgressoRelatorio> getProgresso() {
+    public ProgressoRelatorio getProgresso() {
         return progresso;
     }
 }
