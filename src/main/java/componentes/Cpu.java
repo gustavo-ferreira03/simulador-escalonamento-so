@@ -4,43 +4,52 @@ package componentes;
 import relatorio.Relatorio;
 
 public class Cpu {
-    private static int instanceCounter = 0;
     private int id;
     int contador;
     private final SistemaOperacional so;
     private Processo processoAtual;
 
-    Cpu(SistemaOperacional so) {
-        this.id = instanceCounter++;
+    Cpu(SistemaOperacional so, int id) {
+        this.id = id;
         this.contador = 0;
         this.so = so;
     }
 
-    public void executar() {
-        if(this.processoAtual == null) {
-            this.so.getRelatorio().getBlocoTimelineAtual().addProcessoCpu(id, "");
-            if(this.so.getEscalonador().temProcesso()){
-                obterProximoProcesso();
-            }
-            else {
-                return;
-            }
+    private void tratarOciosidade() {
+        if(this.so.getEscalonador().temProcesso()){
+            obterProximoProcesso();
         }
-        this.so.getRelatorio().getBlocoTimelineAtual().addProcessoCpu(id, this.processoAtual.getNome());
-        this.processoAtual.executar();
-        this.contador++;
+    }
 
+    public void executar() {
+        if(ociosa()) {
+            this.so.getRelatorio().getBlocoTimelineAtual().addProcessoCpu(id, "");
+        }
+        else {
+            this.so.getRelatorio().getBlocoTimelineAtual().addProcessoCpu(id, this.processoAtual.getNome());
+            this.processoAtual.executar();
+            this.contador++;
+            verificarInterrupcao();
+        }
+    }
+
+    public void atualizarProcessos() {
+        if(ociosa()) {
+            tratarOciosidade();
+        }
+    }
+
+    public void verificarInterrupcao() {
         if(this.processoAtual.verificarConclusao()) {
             System.out.println("PROCESSO FINALIZADO: " + this.processoAtual.getNome());
-            obterProximoProcesso();
+            this.processoAtual = null;
             this.contador = 0;
-            return;
         }
-        if(verificarPreempcao()) {
+        else if(verificarPreempcao()) {
+            System.out.println("PROCESSO INTERROMPIDO: " + this.processoAtual.getNome());
             this.so.getEscalonador().adicionarProcesso(this.processoAtual);
-            obterProximoProcesso();
+            this.processoAtual = null;
             this.contador = 0;
-
         }
     }
 
