@@ -42,6 +42,7 @@ public class Escalonador {
     }
 
     public void adicionarProcesso(Processo processo) {
+        System.out.println("PROCESSO PRONTO: " + processo.getNome());
         if(processo.getPrioridade() == Prioridade.TEMPO_REAL) {
             this.filaReal.offer(processo);
         }
@@ -53,10 +54,12 @@ public class Escalonador {
 
     public Processo obterProximoProcesso() {
         if(!filaReal.isEmpty()) {
+            System.out.println("PROCESSO ESCALONADO: " + filaReal.peek().getNome());
             return filaReal.poll();
         }
         for(Queue<Processo> filaUsuario : filasUsuario) {
             if(!filaUsuario.isEmpty()) {
+                System.out.println("PROCESSO ESCALONADO: " + filaUsuario.peek().getNome());
                 return filaUsuario.poll();
             }
         }

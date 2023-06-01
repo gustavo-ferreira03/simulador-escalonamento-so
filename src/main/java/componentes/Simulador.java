@@ -21,26 +21,24 @@ public class Simulador {
         this.so = new SistemaOperacional(relatorio);
         this.processos = lerEntradas(arquivoEntrada);
         this.cpus = new Cpu[4];
-        for(int i = 0; i < cpus.length; i++) this.cpus[i] = new Cpu(so);
+        for(int i = 0; i < cpus.length; i++) this.cpus[i] = new Cpu(so, i);
         this.tempoDecorrido = 0;
     }
 
     public void iniciar() {
-        while(true) {
+        while(!verificarFimSimulacao()) {
             System.out.println("INSTANTE ATUAL: " + this.tempoDecorrido);
             this.relatorio.addBlocoTimeline(new BlocoTimeline(this.relatorio.getBlocoTimelineAtual()));
 
-            for(Processo processo : processos) {
-                if(processo.getTempoChegada() == this.tempoDecorrido) {
-                    so.getEscalonador().adicionarProcesso(processo);
+            verificarChegadaProcessos();
+            for(Cpu cpu : cpus) {
+                cpu.atualizarProcessos();
+                if(this.tempoDecorrido > 0) {
+                    cpu.executar();
                 }
             }
-            for(Cpu cpu : cpus) {
-                cpu.executar();
-            }
-            this.so.getEscalonador().registrarFilasRelatorio();
-            if(verificarFimSimulacao()) {
-                break;
+            if(this.tempoDecorrido > 0) {
+                this.so.getEscalonador().registrarFilasRelatorio();
             }
             this.tempoDecorrido++;
         }
@@ -58,7 +56,7 @@ public class Simulador {
             return false;
         }
         for(Processo processo : processos) {
-            if(processo.getTempoChegada() > this.tempoDecorrido) {
+            if(this.tempoDecorrido <= processo.getTempoChegada()) {
                 return false;
             }
         }
@@ -68,6 +66,7 @@ public class Simulador {
     private void verificarChegadaProcessos() {
         for(Processo processo : processos) {
             if(processo.getTempoChegada() == tempoDecorrido) {
+                so.getRelatorio().registrarEvento(processo.getNome() + ": NOVO - PRONTO");
                 so.getEscalonador().adicionarProcesso(processo);
             }
         }

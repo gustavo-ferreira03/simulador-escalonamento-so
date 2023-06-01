@@ -12,6 +12,9 @@ public class FilasRelatorio {
         this.io = new ArrayList<String>();
         this.p0 = new ArrayList<String>();
         this.p1 = new ArrayList<List<String>>();
+        for(int i = 0; i < 3; i ++) {
+            this.p1.add(new ArrayList<String>());
+        }
     }
 
     public List<String> getIo() {
