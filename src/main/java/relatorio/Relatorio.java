@@ -28,6 +28,10 @@ public class Relatorio {
         this.timeline.add(bloco);
     }
 
+    public void registrarEvento(String evento) {
+        getBlocoTimelineAtual().addEvento(evento);
+    }
+
     public BlocoTimeline getBlocoTimelineAtual() {
         if(this.timeline.size() == 0) {
             return null;

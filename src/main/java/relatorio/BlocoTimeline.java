@@ -8,6 +8,7 @@ public class BlocoTimeline {
     private ArrayList<String>[] cpus;
     private FilasRelatorio filas;
     private ProgressoRelatorio progresso;
+    private ArrayList<String> eventos;
 
     public BlocoTimeline(BlocoTimeline blocoAnterior) {
         this.cpus = new ArrayList[4];
@@ -22,6 +23,11 @@ public class BlocoTimeline {
 
         this.filas = new FilasRelatorio();
         this.progresso = new ProgressoRelatorio();
+        this.eventos = new ArrayList<String>();
+    }
+
+    void addEvento(String evento) {
+        this.eventos.add(evento);
     }
 
     public ArrayList<String>[] getCpus() {

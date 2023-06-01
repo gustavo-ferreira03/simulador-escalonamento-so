@@ -28,9 +28,7 @@ public class Simulador {
     public void iniciar() {
         while(!verificarFimSimulacao()) {
             System.out.println("INSTANTE ATUAL: " + this.tempoDecorrido);
-            if(this.tempoDecorrido > 0) {
-                this.relatorio.addBlocoTimeline(new BlocoTimeline(this.relatorio.getBlocoTimelineAtual()));
-            }
+            this.relatorio.addBlocoTimeline(new BlocoTimeline(this.relatorio.getBlocoTimelineAtual()));
 
             verificarChegadaProcessos();
             for(Cpu cpu : cpus) {
@@ -68,6 +66,7 @@ public class Simulador {
     private void verificarChegadaProcessos() {
         for(Processo processo : processos) {
             if(processo.getTempoChegada() == tempoDecorrido) {
+                so.getRelatorio().registrarEvento(processo.getNome() + ": NOVO - PRONTO");
                 so.getEscalonador().adicionarProcesso(processo);
             }
         }
