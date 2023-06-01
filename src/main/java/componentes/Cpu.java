@@ -42,11 +42,13 @@ public class Cpu {
     public void verificarInterrupcao() {
         if(this.processoAtual.verificarConclusao()) {
             System.out.println("PROCESSO FINALIZADO: " + this.processoAtual.getNome());
+            this.so.getRelatorio().registrarEvento(this.processoAtual.getNome() + ": EXECUÇÃO - FINALIZADO (CPU-" + (this.id + 1) + ")");
             this.processoAtual = null;
             this.contador = 0;
         }
         else if(verificarPreempcao()) {
             System.out.println("PROCESSO INTERROMPIDO: " + this.processoAtual.getNome());
+            this.so.getRelatorio().registrarEvento(this.processoAtual.getNome() + ": EXECUÇÃO - PRONTO (CPU-" + (this.id + 1) + ")");
             this.so.getEscalonador().adicionarProcesso(this.processoAtual);
             this.processoAtual = null;
             this.contador = 0;
@@ -70,6 +72,7 @@ public class Cpu {
     private boolean obterProximoProcesso() {
         this.processoAtual = this.so.getEscalonador().obterProximoProcesso();
         if(this.processoAtual != null) {
+            this.so.getRelatorio().registrarEvento(this.processoAtual.getNome() + ": PRONTO - EXECUÇÃO (CPU-" + (this.id + 1) + ")");
             return true;
         }
         return false;
