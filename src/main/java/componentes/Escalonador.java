@@ -10,14 +10,12 @@ import java.util.Queue;
 public class Escalonador {
     private SistemaOperacional so;
     private int quantum;
-    private Queue<Processo> filaIo;
     private Queue<Processo> filaReal;
     private List<Queue<Processo>> filasUsuario;
 
     Escalonador(SistemaOperacional so, int quantum) {
         this.so = so;
         this.quantum = quantum;
-        this.filaIo = new ArrayDeque<>();
         this.filaReal = new ArrayDeque<>();
         this.filasUsuario = new ArrayList<>();
         for(int i = 0; i < 3; i++) {
