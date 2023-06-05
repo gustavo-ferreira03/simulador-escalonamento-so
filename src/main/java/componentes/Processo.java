@@ -64,6 +64,10 @@ public class Processo {
         return rq;
     }
 
+    public void resetRq() {
+        this.rq = -1;
+    }
+
     public void incrementaRq() {
         if(this.rq < 2) {
             this.rq++;
