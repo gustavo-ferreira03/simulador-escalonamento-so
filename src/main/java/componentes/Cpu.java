@@ -40,6 +40,13 @@ public class Cpu {
             this.processoAtual = null;
             this.contador = 0;
         }
+        else if(verificarPedidoIo()) {
+            System.out.println("PROCESSO BLOQUEADO: " + this.processoAtual.getNome());
+            this.so.getRelatorio().registrarEvento(this.processoAtual.getNome() + ": EXECUÇÃO - BLOQUEADO (CPU-" + (this.id + 1) + ")");
+            this.so.requisitarIo(this.processoAtual);
+            this.processoAtual = null;
+            this.contador = 0;
+        }
         else if(verificarPreempcao()) {
             System.out.println("PROCESSO INTERROMPIDO: " + this.processoAtual.getNome());
             this.so.getRelatorio().registrarEvento(this.processoAtual.getNome() + ": EXECUÇÃO - PRONTO (CPU-" + (this.id + 1) + ")");
@@ -51,6 +58,10 @@ public class Cpu {
 
     public boolean ociosa() {
         return processoAtual == null;
+    }
+
+    private boolean verificarPedidoIo() {
+        return (processoAtual.getDuracaoIO() != 0) && (processoAtual.getInicioIO() == processoAtual.getTempoDecorrido());
     }
 
     private boolean verificarPreempcao() {
