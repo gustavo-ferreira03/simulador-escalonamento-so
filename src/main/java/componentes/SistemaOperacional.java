@@ -15,10 +15,36 @@ public class SistemaOperacional {
         this.escalonador = new Escalonador(this, 2);
         this.relatorio = relatorio;
         this.filaIo = new ArrayDeque<>();
+        this.contadorIo = 0;
+    }
+
+    public void requisitarIo(Processo processo) {
+        this.filaIo.offer(processo);
+    }
+
+    public void registrarFilaIo() {
+        relatorio.getBlocoTimelineAtual().getFilas().setIo(filaIo.stream().map(Processo::getNome).toList());
     }
 
     public void tratarIo() {
-        contadorIo++;
+        if(!filaIo.isEmpty()) {
+            this.contadorIo++;
+            if(verificarConclusaoIo(filaIo.peek())) {
+                desbloquearProcessoIo(filaIo.poll());
+                this.contadorIo = 0;
+            }
+        }
+    }
+
+    private boolean verificarConclusaoIo(Processo processo) {
+        return contadorIo == processo.getDuracaoIO();
+    }
+
+    private void desbloquearProcessoIo(Processo processo) {
+        System.out.println("PROCESSO DESBLOQUEADO: " + processo.getNome());
+        relatorio.registrarEvento(processo.getNome() + ": BLOQUEADO - PRONTO");
+        processo.resetRq();
+        escalonador.adicionarProcesso(processo);
     }
 
     public void inicializarProcesso(Processo processo) {
@@ -32,5 +58,13 @@ public class SistemaOperacional {
 
     public Relatorio getRelatorio() {
         return relatorio;
+    }
+
+    public Queue<Processo> getFilaIo() {
+        return filaIo;
+    }
+
+    public int getContadorIo() {
+        return contadorIo;
     }
 }
