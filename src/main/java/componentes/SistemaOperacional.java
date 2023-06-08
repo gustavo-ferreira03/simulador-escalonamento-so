@@ -21,6 +21,11 @@ public class SistemaOperacional {
         contadorIo++;
     }
 
+    public void inicializarProcesso(Processo processo) {
+        relatorio.registrarEvento(processo.getNome() + ": NOVO - PRONTO");
+        escalonador.adicionarProcesso(processo);
+    }
+
     public Escalonador getEscalonador() {
         return escalonador;
     }

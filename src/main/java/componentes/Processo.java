@@ -74,8 +74,47 @@ public class Processo {
         }
     }
 
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public void setTempoChegada(int tempoChegada) {
+        this.tempoChegada = tempoChegada;
+    }
+
+    public void setPrioridade(Prioridade prioridade) {
+        this.prioridade = prioridade;
+    }
+
+    public void setTempoCPU(int tempoCPU) {
+        this.tempoCPU = tempoCPU;
+    }
+
+    public void setTamanho(int tamanho) {
+        this.tamanho = tamanho;
+    }
+
+    public void setDisco(int disco) {
+        this.disco = disco;
+    }
+
+    public void setDuracaoIO(int duracaoIO) {
+        this.duracaoIO = duracaoIO;
+    }
+
+    public void setTempoDecorrido(int tempoDecorrido) {
+        this.tempoDecorrido = tempoDecorrido;
+    }
+
+    public void setInicioIO(int inicioIO) {
+        this.inicioIO = inicioIO;
+    }
+
+    public void setRq(int rq) {
+        this.rq = rq;
+    }
+
     public void executar() {
-//        System.out.println("Processo executando, tempo decorrido: " + this.tempoDecorrido);
         this.tempoDecorrido++;
     }
 
