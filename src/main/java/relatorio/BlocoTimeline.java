@@ -3,11 +3,13 @@ package relatorio;
 import componentes.Escalonador;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class BlocoTimeline {
     private ArrayList<String>[] cpus;
     private FilasRelatorio filas;
-    private ProgressoRelatorio progresso;
+    Map<String, ProgressoRelatorio> progresso;
     private ArrayList<String> eventos;
 
     public BlocoTimeline(BlocoTimeline blocoAnterior) {
@@ -20,9 +22,8 @@ public class BlocoTimeline {
                 this.cpus[i] = (ArrayList<String>) blocoAnterior.getCpus()[i].clone();
             }
         }
-
         this.filas = new FilasRelatorio();
-        this.progresso = new ProgressoRelatorio();
+        this.progresso = new HashMap<>();
         this.eventos = new ArrayList<String>();
     }
 
@@ -42,7 +43,7 @@ public class BlocoTimeline {
         return filas;
     }
 
-    public ProgressoRelatorio getProgresso() {
+    public Map<String, ProgressoRelatorio> getProgresso() {
         return progresso;
     }
 }

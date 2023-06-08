@@ -2,6 +2,7 @@
 package componentes;
 
 import relatorio.BlocoTimeline;
+import relatorio.ProgressoRelatorio;
 import relatorio.Relatorio;
 
 import java.io.BufferedReader;
@@ -37,6 +38,7 @@ public class Simulador {
                     cpu.executar();
                 }
             }
+            registrarProgressoProcessos();
             so.tratarIo();
             if(this.tempoDecorrido > 0) {
                 this.so.getEscalonador().registrarFilasRelatorio();
@@ -46,6 +48,13 @@ public class Simulador {
         }
         System.out.println("GERANDO RELATORIO");
         this.relatorio.gerarRelatorio();
+    }
+
+    private void registrarProgressoProcessos() {
+        for(Processo processo : processos) {
+            ProgressoRelatorio progresso = new ProgressoRelatorio(processo.getTempoDecorrido(), processo.getTempoCPU());
+            relatorio.getBlocoTimelineAtual().getProgresso().put(processo.getNome(), progresso);
+        }
     }
 
     private boolean verificarFimSimulacao() {

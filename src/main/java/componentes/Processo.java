@@ -24,6 +24,10 @@ public class Processo {
         this.rq = -1;
     }
 
+    public double getProgresso() {
+        return Math.round(10000 * (double) tempoDecorrido / tempoCPU) / 100.0;
+    }
+
     public String getNome() {
         return nome;
     }
