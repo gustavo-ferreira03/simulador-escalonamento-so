@@ -37,9 +37,11 @@ public class Simulador {
                     cpu.executar();
                 }
             }
+            so.tratarIo();
             if(this.tempoDecorrido > 0) {
                 this.so.getEscalonador().registrarFilasRelatorio();
             }
+            so.registrarFilaIo();
             this.tempoDecorrido++;
         }
         System.out.println("GERANDO RELATORIO");
@@ -55,6 +57,9 @@ public class Simulador {
         if(this.so.getEscalonador().temProcesso()) {
             return false;
         }
+        if(!this.so.getFilaIo().isEmpty()) {
+            return false;
+        }
         for(Processo processo : processos) {
             if(this.tempoDecorrido <= processo.getTempoChegada()) {
                 return false;
@@ -67,7 +72,6 @@ public class Simulador {
         for(Processo processo : processos) {
             if(processo.getTempoChegada() == tempoDecorrido) {
                 so.inicializarProcesso(processo);
-                processos.remove(processo);
             }
         }
     }
