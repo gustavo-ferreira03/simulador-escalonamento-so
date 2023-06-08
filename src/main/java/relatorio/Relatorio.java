@@ -24,8 +24,8 @@ public class Relatorio {
         this.processos.add(processo);
     }
 
-    public void addBlocoTimeline(BlocoTimeline bloco) {
-        this.timeline.add(bloco);
+    public void criarBlocoTimeline() {
+        this.timeline.add(new BlocoTimeline(this.getBlocoTimelineAtual()));
     }
 
     public void registrarEvento(String evento) {
