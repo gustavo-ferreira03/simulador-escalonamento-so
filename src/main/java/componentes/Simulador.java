@@ -37,15 +37,15 @@ public class Simulador {
                     cpu.executar();
                 }
             }
-            registrarProgressoProcessos();
             so.tratarIo();
+            for(Cpu cpu: cpus) {
+                cpu.atualizarProcessos();
+            }
+            registrarProgressoProcessos();
             if(this.tempoDecorrido > 0) {
                 this.so.getEscalonador().registrarFilasRelatorio();
             }
             so.registrarFilaIo();
-            for(Cpu cpu: cpus) {
-                cpu.atualizarProcessos();
-            }
             this.tempoDecorrido++;
         }
         System.out.println("GERANDO RELATORIO");
