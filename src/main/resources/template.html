@@ -38,17 +38,17 @@
                 padding-right: 5%
             }
 
+            .cpus--progresso {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+                justify-content: space-between;
+            }
+
             .cpus-container {
                 display: flex;
                 flex-direction: column;
                 gap: 5px;
-            }
-
-            .cpus {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                grid-column-gap: 10px;
-                grid-row-gap: 5px;
             }
 
             .cpu {
@@ -65,13 +65,46 @@
 
             .tabela_escalonamento th,td {
                 border: 1px solid #282A35;
-                min-width: 1rem;
-                height: 1rem;
-                font-size: 11px;
+                padding: 0.2rem;
+                text-align: center;
+                min-width: 1.4rem;
+                height: 1.4rem;
+                font-size: 12px;
             }
 
-            .tabela_escalonamento td.preenchido {
-                background-color: red;
+            .progresso-container {
+                width: 50%;
+            }
+
+            .progresso_processos-container {
+                height: 400px;
+            }
+
+            .progresso_processos {
+                list-style: none;
+                padding: 50px 0 0 0;
+            }
+
+            .progresso_processos li {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .progresso_processos li p {
+                min-width: 30px;
+                text-align: end;
+                font-size: 12px;
+            }
+
+            .barra_progresso {
+                width: 200px;
+                height: 15px;
+                border: 1px solid #282A35;
+            }
+
+            .barra_progresso > div {
+                height: 100%;
             }
 
             .painel-container {
@@ -79,8 +112,11 @@
                 flex-direction: column;
                 justify-content: center;
                 padding: 25px;
-                min-width: 350px;
-                min-height: 200px;
+                min-width: 300px;
+                max-width: 700px;
+                min-height: 175px;
+                max-height: 250px;
+                overflow-x: scroll;
                 border: 2px dotted #282A35;
                 border-radius: 5px;
             }
@@ -88,6 +124,7 @@
             .fila-container {
                 display: flex;
                 align-items: center;
+                justify-content: flex-start;
                 gap: 4px;
                 margin-bottom: 20px;
             }
@@ -109,14 +146,14 @@
                 align-items: center;
                 height: 22px;
                 pointer-events: none;
+                width: 200px;
             }
 
             .fila .processo_fila {
                 font-size: 12px;
-                width: 38px;
+                min-width: 38px;
                 height: 100%;
                 border: 1px solid #282A35;
-                background-color: aquamarine;
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -167,55 +204,43 @@
         <main>
             <h1>Escalonador de Processos</h1>
             <section class="cpus--filas">
-                <section class="cpus-container">
-                    <h2>CPUs</h2>
-                    <section class="painel-container">
-                        <div class="cpus">
-                            <div class="cpu" id="cpu_1">
-                                <h3>CPU 1:</h3>
-                                <table class="tabela_escalonamento p1">
+                <section class="cpus--progresso">
+                    <section class="cpus-container">
+                        <h2>CPUs</h2>
+                        <section class="painel-container">
+                            <div class="cpus">
+                                <table class="tabela_escalonamento">
                                     <thead>
                                         <tr>
                                             <th></th>
                                         </tr>
                                     </thead>
-                                    <tbody></tbody>
-                                </table>
-                            </div>
-                            <div class="cpu" id="cpu_2">
-                                <h3>CPU 2:</h3>
-                                <table class="tabela_escalonamento p1">
-                                    <thead>
+                                    <tbody>
                                         <tr>
-                                            <th></th>
+                                            <th>C1</th>
                                         </tr>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
-                            </div>
-                            <div class="cpu" id="cpu_3">
-                                <h3>CPU 3:</h3>
-                                <table class="tabela_escalonamento p1">
-                                    <thead>
                                         <tr>
-                                            <th></th>
+                                            <th>C2</th>
                                         </tr>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
-                            </div>
-                            <div class="cpu" id="cpu_4">
-                                <h3>CPU 4:</h3>
-                                <table class="tabela_escalonamento p1">
-                                    <thead>
                                         <tr>
-                                            <th></th>
+                                            <th>C3</th>
                                         </tr>
-                                    </thead>
-                                    <tbody></tbody>
+                                        <tr>
+                                            <th>C4</th>
+                                        </tr>
+                                    </tbody>
                                 </table>
                             </div>
-                        </div>
+                        </section>
+                    </section>
+                    <section class="progresso-container">
+                        <h2>Progresso</h2>
+                        <section class="painel-container">
+                            <div class="progresso_processos-container">
+                                <ul class="progresso_processos">
+                                </ul>
+                            </div>
+                        </section>
                     </section>
                 </section>
                 <section class="filas--eventos">
@@ -267,9 +292,14 @@
         </main>
         <script>
             const {processos, timeline} = <%= relatorioJson %>;
+            let cores = processos.reduce((cores,processo,index)=>({
+                ...cores,
+                [processo]: selectColor(index)
+            }), {});
             let momentoAtual = 0;
             const tempoTotal = timeline.length - 1;
             const cpusElement = document.querySelector(".cpus");
+            const progressoElement = document.querySelector(".progresso_processos");
             const filaIoElement = document.querySelector("#fila_io");
             const filaRealElement = document.querySelector("#fila_real");
             const filasUsuarioElement = document.querySelector("#filas_usuario");
@@ -278,10 +308,13 @@
             let timer;
             for (const cpuElement of cpusElement.children) {
                 criarTimeline(cpuElement);
-                criarProcessos(cpuElement);
                 criarQuadrados(cpuElement);
             }
             atualizarSimulacao();
+            function selectColor(number) {
+                const hue = number * 137.508;
+                return `hsl(${hue},70%,60%)`;
+            }
             function toggleButtons() {
                 playButtonElement.toggleAttribute("hidden");
                 pauseButtonElement.toggleAttribute("hidden");
@@ -290,7 +323,8 @@
                 if (momentoAtual < tempoTotal) {
                     momentoAtual++;
                     atualizarSimulacao();
-                    if (momentoAtual >= tempoTotal) pausar();
+                    if (momentoAtual >= tempoTotal)
+                        pausar();
                 }
             }
             function voltar() {
@@ -300,7 +334,7 @@
                 }
             }
             function iniciar() {
-                if(momentoAtual < tempoTotal) {
+                if (momentoAtual < tempoTotal) {
                     toggleButtons();
                     iniciarTimeout();
                 }
@@ -325,11 +359,10 @@
                 atualizarCpus(dados);
                 atualizarFilas(dados);
                 atualizarEventos(dados);
+                atualizarProgresso(dados);
             }
             function limparSimulacao() {
-                for (let i = 0; i < 4; i++) {
-                    limparLinha(i, cpusElement.children[i]);
-                }
+                limparCpus();
                 limparFila(filaIoElement);
                 limparFila(filaRealElement);
                 for (let filaIndex = 0; filaIndex < filasUsuarioElement.children.length; filaIndex++) {
@@ -338,17 +371,33 @@
                 }
             }
             function atualizarCpus(dados) {
+                limparCpus();
                 for (let i = 0; i < 4; i++) {
-                    limparLinha(i, cpusElement.children[i]);
                     let processosCpu = dados.cpus[i];
-                    processosCpu.forEach((processo,indexProcesso)=>{
-                        const processoElement = buscarProcessoElement(processo, cpusElement.children[i]);
-                        if (processoElement) {
-                            processoElement.parentElement.children[indexProcesso + 1].className = "preenchido";
-                        }
+                    processosCpu.forEach((processo,momento)=>{
+                        const momentoTdElement = getMomentoTdElement(i, processo, momento);
+                        momentoTdElement.innerHTML = processo;
+                        momentoTdElement.style = `background-color: ${cores[processo]}`;
                     }
                     );
                 }
+            }
+            function atualizarProgresso(dados) {
+                limparProgresso();
+                const {progresso} = dados;
+                processos.forEach(processo => progressoElement.appendChild(criarProgressoLiElement(processo, progresso)));
+            }
+            function limparProgresso() {
+                progressoElement.replaceChildren();
+            }
+            function criarProgressoLiElement(processo, progresso) {
+                const liElement = document.createElement("li");
+                const width = 100 * progresso[processo].tempoDecorrido / progresso[processo].tempoCpu;
+                liElement.innerHTML = `<p>${processo}</p><div class="barra_progresso"><div style="background-color: ${cores[processo]}; width: ${width}%"></div></div><p>${progresso[processo].tempoDecorrido} / ${progresso[processo].tempoCpu}</p>`;
+                return liElement;
+            }
+            function getMomentoTdElement(cpu, processo, momento) {
+                return cpusElement.children[0].querySelector("tbody").children[cpu].children[momento + 1];
             }
             function atualizarFilas(dados) {
                 const {io, p0, p1} = dados.filas;
@@ -380,17 +429,19 @@
                 const processoFilaElement = document.createElement("div");
                 processoFilaElement.className = "processo_fila";
                 processoFilaElement.innerText = processo;
+                processoFilaElement.style = `background-color: ${cores[processo]}`;
                 return processoFilaElement;
             }
             function buscarProcessoElement(processo, cpuElement) {
                 const xpath = `.//th[text()="${processo}"]`;
                 return document.evaluate(xpath, cpuElement, null, XPathResult.FIRST_ORDERED_NODE_TYPE).singleNodeValue;
             }
-            function limparLinha(linha, cpuElement) {
-                const cpuTableBodyElement = cpuElement.querySelector("tbody");
+            function limparCpus() {
+                const cpuTableBodyElement = cpusElement.children[0].querySelector("tbody");
                 for (const cpuTableBodyRowElement of cpuTableBodyElement.children) {
-                    for (let i = 0; i <= tempoTotal; i++) {
-                        cpuTableBodyRowElement.children[i].className = "";
+                    for (let i = 1; i <= tempoTotal; i++) {
+                        cpuTableBodyRowElement.children[i].innerHTML = "";
+                        cpuTableBodyRowElement.children[i].style = "";
                     }
                 }
             }
@@ -399,15 +450,6 @@
                 for (let i = 1; i <= tempoTotal; i++) {
                     cpuTableHeadRowElement.appendChild(criarCelulaTabela("th", i));
                 }
-            }
-            function criarProcessos(cpuElement) {
-                const cpuTableBodyElement = cpuElement.querySelector("tbody");
-                processos.forEach(processo=>{
-                    const trElement = document.createElement("tr");
-                    trElement.appendChild(criarCelulaTabela("th", processo));
-                    cpuTableBodyElement.appendChild(trElement);
-                }
-                );
             }
             function criarQuadrados(cpuElement) {
                 const cpuTableBodyElement = cpuElement.querySelector("tbody");
