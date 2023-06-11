@@ -32,9 +32,8 @@ public class Simulador {
             this.relatorio.criarBlocoTimeline();
 
             verificarChegadaProcessos();
-            for(Cpu cpu : cpus) {
-                cpu.atualizarProcessos();
-                if(this.tempoDecorrido > 0) {
+            if(this.tempoDecorrido > 0) {
+                for(Cpu cpu : cpus) {
                     cpu.executar();
                 }
             }
@@ -44,6 +43,9 @@ public class Simulador {
                 this.so.getEscalonador().registrarFilasRelatorio();
             }
             so.registrarFilaIo();
+            for(Cpu cpu: cpus) {
+                cpu.atualizarProcessos();
+            }
             this.tempoDecorrido++;
         }
         System.out.println("GERANDO RELATORIO");
