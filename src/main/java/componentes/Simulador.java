@@ -27,29 +27,27 @@ public class Simulador {
     }
 
     public void iniciar() {
-        while(!verificarFimSimulacao()) {
+        while(!simulacaoAcabou()) {
             System.out.println("INSTANTE ATUAL: " + this.tempoDecorrido);
-            this.relatorio.criarBlocoTimeline();
+            relatorio.criarBlocoTimeline();
 
-            verificarChegadaProcessos();
+            inicializarNovosProcessos();
+            so.tratarIo();
             if(this.tempoDecorrido > 0) {
                 for(Cpu cpu : cpus) {
                     cpu.executar();
+                    cpu.tratarInterrupcao();
                 }
             }
-            so.tratarIo();
+            registrarProgressoProcessos();
             for(Cpu cpu: cpus) {
                 cpu.atualizarProcessos();
             }
-            registrarProgressoProcessos();
-            if(this.tempoDecorrido > 0) {
-                this.so.getEscalonador().registrarFilasRelatorio();
-            }
-            so.registrarFilaIo();
+            relatorio.getBlocoTimelineAtual().registrarFilas(so);
             this.tempoDecorrido++;
         }
         System.out.println("GERANDO RELATORIO");
-        this.relatorio.gerarRelatorio();
+        relatorio.gerarRelatorio();
     }
 
     private void registrarProgressoProcessos() {
@@ -59,7 +57,7 @@ public class Simulador {
         }
     }
 
-    private boolean verificarFimSimulacao() {
+    private boolean simulacaoAcabou() {
         for(Cpu cpu : cpus) {
             if(!cpu.ociosa()) {
                 return false;
@@ -79,7 +77,7 @@ public class Simulador {
         return true;
     }
 
-    private void verificarChegadaProcessos() {
+    private void inicializarNovosProcessos() {
         for(Processo processo : processos) {
             if(processo.getTempoChegada() == tempoDecorrido) {
                 so.inicializarProcesso(processo);

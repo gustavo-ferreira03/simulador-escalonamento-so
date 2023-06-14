@@ -22,10 +22,6 @@ public class SistemaOperacional {
         this.filaIo.offer(processo);
     }
 
-    public void registrarFilaIo() {
-        relatorio.getBlocoTimelineAtual().getFilas().setIo(filaIo.stream().map(Processo::getNome).toList());
-    }
-
     public void tratarIo() {
         if(!filaIo.isEmpty()) {
             this.contadorIo++;

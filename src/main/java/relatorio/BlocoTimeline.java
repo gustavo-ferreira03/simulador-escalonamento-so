@@ -1,10 +1,10 @@
 package relatorio;
 
 import componentes.Escalonador;
+import componentes.Processo;
+import componentes.SistemaOperacional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class BlocoTimeline {
     private ArrayList<String>[] cpus;
@@ -41,6 +41,16 @@ public class BlocoTimeline {
 
     public FilasRelatorio getFilas() {
         return filas;
+    }
+
+    public void registrarFilas(SistemaOperacional so) {
+        filas.setIo(so.getFilaIo().stream().map(Processo::getNome).toList());
+        filas.setP0(so.getEscalonador().getFilaReal().stream().map(Processo::getNome).toList());
+        List<List<String>> p1 = new ArrayList<List<String>>();
+        for(Queue<Processo> filaUsuario : so.getEscalonador().getFilasUsuario()) {
+            p1.add(filaUsuario.stream().map(Processo::getNome).toList());
+        }
+        filas.setP1(p1);
     }
 
     public Map<String, ProgressoRelatorio> getProgresso() {

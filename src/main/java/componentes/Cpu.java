@@ -23,8 +23,17 @@ public class Cpu {
             this.so.getRelatorio().getBlocoTimelineAtual().addProcessoCpu(id, this.processoAtual.getNome());
             this.processoAtual.executar();
             this.contador++;
-            verificarInterrupcao();
+            if(processoAtual.verificarConclusao()) {
+                finalizarProcesso();
+            }
         }
+    }
+
+    private void finalizarProcesso() {
+        System.out.println("PROCESSO FINALIZADO: " + this.processoAtual.getNome());
+        this.so.getRelatorio().registrarEvento(this.processoAtual.getNome() + ": EXECUÇÃO - FINALIZADO (CPU-" + (this.id + 1) + ")");
+        this.processoAtual = null;
+        this.contador = 0;
     }
 
     public void atualizarProcessos() {
@@ -33,14 +42,11 @@ public class Cpu {
         }
     }
 
-    private void verificarInterrupcao() {
-        if(processoAtual.verificarConclusao()) {
-            System.out.println("PROCESSO FINALIZADO: " + this.processoAtual.getNome());
-            this.so.getRelatorio().registrarEvento(this.processoAtual.getNome() + ": EXECUÇÃO - FINALIZADO (CPU-" + (this.id + 1) + ")");
-            this.processoAtual = null;
-            this.contador = 0;
+    public void tratarInterrupcao() {
+        if(ociosa()) {
+            return;
         }
-        else if(verificarPedidoIo()) {
+        if(verificarPedidoIo()) {
             System.out.println("PROCESSO BLOQUEADO: " + this.processoAtual.getNome());
             this.so.getRelatorio().registrarEvento(this.processoAtual.getNome() + ": EXECUÇÃO - BLOQUEADO (CPU-" + (this.id + 1) + ")");
             this.so.requisitarIo(this.processoAtual);

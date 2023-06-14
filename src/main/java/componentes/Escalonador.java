@@ -64,14 +64,31 @@ public class Escalonador {
         return null;
     }
 
-    public void registrarFilasRelatorio() {
-        FilasRelatorio filasRelatorio = this.so.getRelatorio().getBlocoTimelineAtual().getFilas();
-        filasRelatorio.setIo(new ArrayList<>());
-        filasRelatorio.setP0(this.filaReal.stream().map(Processo::getNome).toList());
-        List<List<String>> p1 = new ArrayList<List<String>>();
-        for(Queue<Processo> filaUsuario : filasUsuario) {
-            p1.add(filaUsuario.stream().map(Processo::getNome).toList());
-        }
-        filasRelatorio.setP1(p1);
+    public SistemaOperacional getSo() {
+        return so;
+    }
+
+    public void setSo(SistemaOperacional so) {
+        this.so = so;
+    }
+
+    public void setQuantum(int quantum) {
+        this.quantum = quantum;
+    }
+
+    public Queue<Processo> getFilaReal() {
+        return filaReal;
+    }
+
+    public void setFilaReal(Queue<Processo> filaReal) {
+        this.filaReal = filaReal;
+    }
+
+    public List<Queue<Processo>> getFilasUsuario() {
+        return filasUsuario;
+    }
+
+    public void setFilasUsuario(List<Queue<Processo>> filasUsuario) {
+        this.filasUsuario = filasUsuario;
     }
 }
