@@ -1,8 +1,10 @@
 package relatorio;
 
+import componentes.Discos;
 import componentes.Escalonador;
 import componentes.Processo;
 import componentes.SistemaOperacional;
+import utils.ProcessoDisco;
 
 import java.util.*;
 
@@ -10,7 +12,8 @@ public class BlocoTimeline {
     private ArrayList<String>[] cpus;
     private FilasRelatorio filas;
     Map<String, ProgressoRelatorio> progresso;
-    private ArrayList<String> eventos;
+    private List<String> eventos;
+    private List<DiscosRelatorio> discos;
 
     public BlocoTimeline(BlocoTimeline blocoAnterior) {
         this.cpus = new ArrayList[4];
@@ -24,7 +27,8 @@ public class BlocoTimeline {
         }
         this.filas = new FilasRelatorio();
         this.progresso = new HashMap<>();
-        this.eventos = new ArrayList<String>();
+        this.eventos = new ArrayList<>();
+        this.discos = new ArrayList<>();
     }
 
     void addEvento(String evento) {
@@ -51,6 +55,20 @@ public class BlocoTimeline {
             p1.add(filaUsuario.stream().map(Processo::getNome).toList());
         }
         filas.setP1(p1);
+    }
+
+    public void registrarDiscos(Discos discos) {
+        for(ProcessoDisco processoDisco : discos.getProcessosUtilizando()) {
+            Processo processo = processoDisco.getProcesso();
+            this.discos.add(new DiscosRelatorio(processo.getNome(), processo.getDisco()));
+        }
+    }
+
+    public void registrarProgresso(List<Processo> processos) {
+        for(Processo processo : processos) {
+            ProgressoRelatorio progresso = new ProgressoRelatorio(processo.getTempoDecorrido(), processo.getTempoCPU());
+            this.progresso.put(processo.getNome(), progresso);
+        }
     }
 
     public Map<String, ProgressoRelatorio> getProgresso() {

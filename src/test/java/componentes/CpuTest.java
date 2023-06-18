@@ -1,9 +1,9 @@
 package componentes;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.*;
 import relatorio.BlocoTimeline;
 import relatorio.Relatorio;
+import utils.Prioridade;
 
 public class CpuTest {
     Cpu cpu;
@@ -17,7 +17,7 @@ public class CpuTest {
     void inicializarCpu() {
         relatorio = new Relatorio();
         relatorio.criarBlocoTimeline();
-        so = new SistemaOperacional(relatorio);
+        so = new SistemaOperacional(new Discos(4), relatorio);
         cpu = new Cpu(so, 0);
         quantum = so.getEscalonador().getQuantum();
     }

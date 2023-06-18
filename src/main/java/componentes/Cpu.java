@@ -1,7 +1,7 @@
 
 package componentes;
 
-import relatorio.Relatorio;
+import utils.Prioridade;
 
 public class Cpu {
     private int id;

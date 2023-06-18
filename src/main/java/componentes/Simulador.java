@@ -1,9 +1,9 @@
 
 package componentes;
 
-import relatorio.BlocoTimeline;
 import relatorio.ProgressoRelatorio;
 import relatorio.Relatorio;
+import utils.Prioridade;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -12,6 +12,7 @@ import java.util.*;
 
 public class Simulador {
     private Relatorio relatorio;
+    private Discos discos;
     private SistemaOperacional so;
     private List<Processo> processos;
     private Cpu[] cpus;
@@ -19,7 +20,8 @@ public class Simulador {
 
     public Simulador(String arquivoEntrada) {
         this.relatorio = new Relatorio();
-        this.so = new SistemaOperacional(relatorio);
+        this.discos = new Discos(4);
+        this.so = new SistemaOperacional(discos, relatorio);
         this.processos = lerEntradas(arquivoEntrada);
         this.cpus = new Cpu[4];
         for(int i = 0; i < cpus.length; i++) this.cpus[i] = new Cpu(so, i);
@@ -39,22 +41,17 @@ public class Simulador {
                     cpu.tratarInterrupcao();
                 }
             }
-            registrarProgressoProcessos();
             for(Cpu cpu: cpus) {
                 cpu.atualizarProcessos();
             }
+            so.alocarDiscos();
+            relatorio.getBlocoTimelineAtual().registrarProgresso(processos);
+            relatorio.getBlocoTimelineAtual().registrarDiscos(discos);
             relatorio.getBlocoTimelineAtual().registrarFilas(so);
             this.tempoDecorrido++;
         }
         System.out.println("GERANDO RELATORIO");
         relatorio.gerarRelatorio();
-    }
-
-    private void registrarProgressoProcessos() {
-        for(Processo processo : processos) {
-            ProgressoRelatorio progresso = new ProgressoRelatorio(processo.getTempoDecorrido(), processo.getTempoCPU());
-            relatorio.getBlocoTimelineAtual().getProgresso().put(processo.getNome(), progresso);
-        }
     }
 
     private boolean simulacaoAcabou() {

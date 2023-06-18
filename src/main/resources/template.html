@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Simulação</title>
-        <style>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulação</title>
+    <style>
             * {
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             }
@@ -20,6 +20,10 @@
 
             h2 {
                 font-size: 16px;
+            }
+
+            h3 {
+                font-size: 12px;
             }
 
             main {
@@ -88,6 +92,10 @@
                 min-width: 30px;
                 text-align: end;
                 font-size: 12px;
+            }
+
+            .progresso--recursos {
+                display: flex;
             }
 
             .barra_progresso {
@@ -186,99 +194,146 @@
             .controle button:hover {
                 cursor: pointer;
             }
+
+            .discos-container {
+                width: 150px;
+                height: 150px;
+                position: relative;
+            }
+
+            .discos {
+                position: relative;
+                width: 150px;
+                height: 150px;
+                margin: 0 auto 2rem;
+                border-radius: 100%;
+                background-color: rgba(0, 0, 0, 0.037);
+            }
+
+            .discos-centro {
+                width: 70%;
+                height: 70%;
+                border-radius: 50%;
+                background: #fff;
+                top: 50%;
+                position: absolute;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                z-index: 2;
+            }
+
+            .segmento_disco {
+                border-radius: 50%;
+                clip: rect(75px, 75px, 150px, 0px);
+                position: absolute;
+                height: 100%;
+                width: 100%;
+            }
         </style>
-    </head>
-    <body>
-        <main>
-            <h1>Escalonador de Processos</h1>
-            <section class="cpus--filas">
-                <section class="cpus--progresso">
-                    <section class="cpus-container">
-                        <h2>CPUs</h2>
-                        <section class="painel-container">
-                            <div class="cpus">
-                                <table class="tabela_escalonamento">
-                                    <thead>
-                                        <tr>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <th>C1</th>
-                                        </tr>
-                                        <tr>
-                                            <th>C2</th>
-                                        </tr>
-                                        <tr>
-                                            <th>C3</th>
-                                        </tr>
-                                        <tr>
-                                            <th>C4</th>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </section>
-                    </section>
-                    <section class="progresso-container">
-                        <h2>Progresso</h2>
-                        <section class="painel-container">
-                            <div class="progresso_processos-container">
-                                <ul class="progresso_processos">
-                                </ul>
-                            </div>
-                        </section>
-                    </section>
+</head>
+<body>
+<main>
+    <h1>Escalonador de Processos</h1>
+    <section class="cpus--filas">
+        <section class="cpus--progresso">
+            <section class="cpus-container">
+                <h2>CPUs</h2>
+                <section class="painel-container">
+                    <div class="cpus">
+                        <table class="tabela_escalonamento">
+                            <thead>
+                            <tr>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <th>C1</th>
+                            </tr>
+                            <tr>
+                                <th>C2</th>
+                            </tr>
+                            <tr>
+                                <th>C3</th>
+                            </tr>
+                            <tr>
+                                <th>C4</th>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </section>
-                <section class="filas--eventos">
-                    <section class="filas">
-                        <h2>Filas</h2>
-                        <div class="painel-container">
-                            <div class="fila-container">
-                                <p>I/O:</p>
-                                <div class="fila" id="fila_io"></div>
-                            </div>
-                            <div class="fila-container">
-                                <p>Prioridade 0:</p>
-                                <div class="fila" id="fila_real">
-                                    <div class="processo_fila">P1</div>
-                                </div>
-                            </div>
-                            <div class="fila-container">
-                                <p>Prioridade 1:</p>
-                                <div class="filas" id="filas_usuario">
-                                    <div class="fila"></div>
-                                    <div class="fila"></div>
-                                    <div class="fila"></div>
-                                </div>
+            </section>
+            <section class="progresso--recursos">
+                <section class="recursos-container">
+                    <h2>Recursos</h2>
+                    <section class="painel-container">
+                        <h3>Discos</h3>
+                        <div class="discos-container">
+                            <div class="discos">
+                                <div class="discos-centro"></div>
                             </div>
                         </div>
                     </section>
-                    <section class="eventos">
-                        <h2>Eventos</h2>
-                        <div class="painel-container">
-                            <ul class="lista--eventos"></ul>
+                </section>
+                <section class="progresso-container">
+                    <h2>Progresso</h2>
+                    <section class="painel-container">
+                        <div class="progresso_processos-container">
+                            <ul class="progresso_processos"></ul>
                         </div>
                     </section>
                 </section>
             </section>
-            <section class="controle">
-                <button onclick="voltar()">Voltar</button>
-                <button id="play" onclick="iniciar()">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play" viewBox="0 0 16 16">
-                        <path d="M10.804 8 5 4.633v6.734L10.804 8zm.792-.696a.802.802 0 0 1 0 1.392l-6.363 3.692C4.713 12.69 4 12.345 4 11.692V4.308c0-.653.713-.998 1.233-.696l6.363 3.692z"/>
-                    </svg>
-                </button>
-                <button id="pause" onclick="pausar()" hidden>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pause" viewBox="0 0 16 16">
-                        <path d="M6 3.5a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5zm4 0a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5z"/>
-                    </svg>
-                </button>
-                <button onclick="avancar()">Avançar</button>
+        </section>
+        <section class="filas--eventos">
+            <section class="filas">
+                <h2>Filas</h2>
+                <div class="painel-container">
+                    <div class="fila-container">
+                        <p>I/O:</p>
+                        <div class="fila" id="fila_io"></div>
+                    </div>
+                    <div class="fila-container">
+                        <p>Prioridade 0:</p>
+                        <div class="fila" id="fila_real">
+                            <div class="processo_fila">P1</div>
+                        </div>
+                    </div>
+                    <div class="fila-container">
+                        <p>Prioridade 1:</p>
+                        <div class="filas" id="filas_usuario">
+                            <div class="fila"></div>
+                            <div class="fila"></div>
+                            <div class="fila"></div>
+                        </div>
+                    </div>
+                </div>
             </section>
-        </main>
-        <script>
+            <section class="eventos">
+                <h2>Eventos</h2>
+                <div class="painel-container">
+                    <ul class="lista--eventos"></ul>
+                </div>
+            </section>
+        </section>
+    </section>
+    <section class="controle">
+        <button onclick="voltar()">Voltar</button>
+        <button id="play" onclick="iniciar()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play" viewBox="0 0 16 16">
+                <path d="M10.804 8 5 4.633v6.734L10.804 8zm.792-.696a.802.802 0 0 1 0 1.392l-6.363 3.692C4.713 12.69 4 12.345 4 11.692V4.308c0-.653.713-.998 1.233-.696l6.363 3.692z"/>
+            </svg>
+        </button>
+        <button id="pause" onclick="pausar()" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pause" viewBox="0 0 16 16">
+                <path d="M6 3.5a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5zm4 0a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5z"/>
+            </svg>
+        </button>
+        <button onclick="avancar()">Avançar</button>
+    </section>
+</main>
+<script>
             const {processos, timeline} = <%= relatorioJson %>;
             let cores = processos.reduce((cores,processo,index)=>({
                 ...cores,
@@ -291,6 +346,7 @@
             const filaIoElement = document.querySelector("#fila_io");
             const filaRealElement = document.querySelector("#fila_real");
             const filasUsuarioElement = document.querySelector("#filas_usuario");
+            const discosGraficoElement = document.querySelector(".discos");
             const playButtonElement = document.querySelector("#play");
             const pauseButtonElement = document.querySelector("#pause");
             let timer;
@@ -348,6 +404,7 @@
                 atualizarFilas(dados);
                 atualizarEventos(dados);
                 atualizarProgresso(dados);
+                atualizarDiscos(dados);
             }
             function limparSimulacao() {
                 limparCpus();
@@ -357,6 +414,28 @@
                     const filaUsuarioElement = filasUsuarioElement.children[filaIndex];
                     limparFila(filaUsuarioElement);
                 }
+            }
+            function atualizarDiscos(dados) {
+                const {discos} = dados;
+                let totalUtilizado = 0;
+                discosGraficoElement.innerHTML = '<div class="discos-centro"></div>';
+                discos.forEach(segmento => {
+                    mostrarUtilizacaoDisco(segmento, totalUtilizado);
+                    totalUtilizado += segmento.numeroDiscos;
+                });
+            }
+            function mostrarUtilizacaoDisco(segmento, totalUtilizado) {
+                let angulo = 90 * totalUtilizado;
+                for(let i = 0; i < segmento.numeroDiscos; i++) {
+                    discosGraficoElement.appendChild(criarSegmentoDiscoElement(segmento.processo, angulo));
+                    angulo += 90;
+                }
+            }
+            function criarSegmentoDiscoElement(processo, angulo) {
+                const segmentoDiscoElement = document.createElement("div");
+                segmentoDiscoElement.className = "segmento_disco";
+                segmentoDiscoElement.style = `transform: rotate(${angulo}deg); background-color: ${cores[processo]}`;
+                return segmentoDiscoElement;
             }
             function atualizarCpus(dados) {
                 limparCpus();
@@ -373,7 +452,7 @@
             function atualizarProgresso(dados) {
                 limparProgresso();
                 const {progresso} = dados;
-                processos.forEach(processo => progressoElement.appendChild(criarProgressoLiElement(processo, progresso)));
+                processos.forEach(processo=>progressoElement.appendChild(criarProgressoLiElement(processo, progresso)));
             }
             function limparProgresso() {
                 progressoElement.replaceChildren();
@@ -453,5 +532,5 @@
                 return thElement;
             }
         </script>
-    </body>
+</body>
 </html>

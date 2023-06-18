@@ -1,6 +1,6 @@
 package componentes;
 
-import relatorio.FilasRelatorio;
+import utils.Prioridade;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;

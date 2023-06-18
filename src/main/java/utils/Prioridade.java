@@ -1,4 +1,4 @@
-package componentes;
+package utils;
 
 public enum Prioridade {
     TEMPO_REAL(0),

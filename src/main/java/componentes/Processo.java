@@ -1,5 +1,7 @@
 package componentes;
 
+import utils.Prioridade;
+
 public class Processo {
     private String nome;
     private int tempoChegada;
