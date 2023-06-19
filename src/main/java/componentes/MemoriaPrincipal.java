@@ -24,10 +24,11 @@ public class MemoriaPrincipal {
     public void alocar(Processo processo) {
         int quadrosNecessarios = processo.getTamanho();
         this.espacoDisponivel -= quadrosNecessarios;
+        System.out.println(processo.getNome());
         for(int i = 0; i < segmentos.size(); i++) {
             SegmentoMemoria segmento = segmentos.get(i);
             int espacoSegmento = segmento.getNumQuadros();
-            if(segmento.livre()) {
+            if(segmento.livre() && segmento.getNumQuadros() > 0) {
                 if(quadrosNecessarios > segmento.getNumQuadros()) {
                     criarNovoSegmento(processo, segmento, espacoSegmento);
                     quadrosNecessarios -= espacoSegmento;
@@ -60,6 +61,7 @@ public class MemoriaPrincipal {
                 SegmentoMemoria segmentoSeguinte = segmentos.get(i + 1);
                 if(segmentoSeguinte.livre()) {
                     juntarSegmentos(segmento, segmentoSeguinte);
+                    i--;
                 }
             }
         }
