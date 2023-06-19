@@ -1,10 +1,8 @@
 package relatorio;
 
-import componentes.Discos;
-import componentes.Escalonador;
-import componentes.Processo;
-import componentes.SistemaOperacional;
+import componentes.*;
 import utils.ProcessoDisco;
+import utils.SegmentoMemoria;
 
 import java.util.*;
 
@@ -14,6 +12,7 @@ public class BlocoTimeline {
     Map<String, ProgressoRelatorio> progresso;
     private List<String> eventos;
     private List<DiscosRelatorio> discos;
+    private List<MemoriaRelatorio> memoria;
 
     public BlocoTimeline(BlocoTimeline blocoAnterior) {
         this.cpus = new ArrayList[4];
@@ -29,6 +28,7 @@ public class BlocoTimeline {
         this.progresso = new HashMap<>();
         this.eventos = new ArrayList<>();
         this.discos = new ArrayList<>();
+        this.memoria = new ArrayList<>();
     }
 
     void addEvento(String evento) {
@@ -73,5 +73,15 @@ public class BlocoTimeline {
 
     public Map<String, ProgressoRelatorio> getProgresso() {
         return progresso;
+    }
+
+    public void registrarMemoriaPrincipal(MemoriaPrincipal memoriaPrincipal) {
+        for(SegmentoMemoria segmento : memoriaPrincipal.getSegmentos()) {
+            String processo = "";
+            if(segmento.getProcesso() != null) {
+                processo = segmento.getProcesso().getNome();
+            }
+            memoria.add(new MemoriaRelatorio(processo, segmento.getNumQuadros()));
+        }
     }
 }

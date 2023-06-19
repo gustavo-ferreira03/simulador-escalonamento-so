@@ -32,6 +32,7 @@ public class Cpu {
     private void finalizarProcesso() {
         System.out.println("PROCESSO FINALIZADO: " + this.processoAtual.getNome());
         this.so.getRelatorio().registrarEvento(this.processoAtual.getNome() + ": EXECUÇÃO - FINALIZADO (CPU-" + (this.id + 1) + ")");
+        this.so.finalizarProcesso(processoAtual);
         this.processoAtual = null;
         this.contador = 0;
     }

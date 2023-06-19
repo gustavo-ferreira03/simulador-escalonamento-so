@@ -17,7 +17,7 @@ public class CpuTest {
     void inicializarCpu() {
         relatorio = new Relatorio();
         relatorio.criarBlocoTimeline();
-        so = new SistemaOperacional(new Discos(4), relatorio);
+        so = new SistemaOperacional(new Discos(4), new MemoriaPrincipal(32), relatorio);
         cpu = new Cpu(so, 0);
         quantum = so.getEscalonador().getQuantum();
     }

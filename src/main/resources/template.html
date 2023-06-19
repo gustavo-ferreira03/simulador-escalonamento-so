@@ -224,9 +224,24 @@
 
             .segmento_disco {
                 border-radius: 50%;
-                clip: rect(75px, 75px, 150px, 0px);
+                clip: rect(74.5px, 75.5px, 150px,0px);
                 position: absolute;
                 height: 100%;
+                width: 100%;
+            }
+
+            .discos--memoria {
+                display: flex;
+                gap: 40px;
+            }
+
+            .memoria {
+                height: 175px;
+                width: 80px;
+                border: 1px solid #50515a;
+            }
+
+            .bloco_memoria {
                 width: 100%;
             }
         </style>
@@ -268,11 +283,22 @@
                 <section class="recursos-container">
                     <h2>Recursos</h2>
                     <section class="painel-container">
-                        <h3>Discos</h3>
-                        <div class="discos-container">
-                            <div class="discos">
-                                <div class="discos-centro"></div>
-                            </div>
+                        <div class="discos--memoria">
+                            <section>
+                                <h3>Memória Principal</h3>
+                                <div class="memoria-container">
+                                    <div class="memoria">
+                                    </div>
+                                </div>
+                            </section>
+                            <section>
+                                <h3>Discos</h3>
+                                <div class="discos-container">
+                                    <div class="discos">
+                                        <div class="discos-centro"></div>
+                                    </div>
+                                </div>
+                            </section>
                         </div>
                     </section>
                 </section>
@@ -347,6 +373,7 @@
             const filaRealElement = document.querySelector("#fila_real");
             const filasUsuarioElement = document.querySelector("#filas_usuario");
             const discosGraficoElement = document.querySelector(".discos");
+            const memoriaElement = document.querySelector(".memoria");
             const playButtonElement = document.querySelector("#play");
             const pauseButtonElement = document.querySelector("#pause");
             let timer;
@@ -405,6 +432,7 @@
                 atualizarEventos(dados);
                 atualizarProgresso(dados);
                 atualizarDiscos(dados);
+                atualizarMemoria(dados);
             }
             function limparSimulacao() {
                 limparCpus();
@@ -415,18 +443,31 @@
                     limparFila(filaUsuarioElement);
                 }
             }
+            function atualizarMemoria(dados) {
+                const {memoria} = dados;
+                memoriaElement.replaceChildren();
+                memoria.forEach(blocoMemoria => memoriaElement.appendChild(criarBlocoMemoriaElement(blocoMemoria)));
+            }
+            function criarBlocoMemoriaElement(blocoMemoria) {
+                const blocoMemoriaElement = document.createElement("div");
+                const height = 100 * (blocoMemoria.quadros / 32000);
+                blocoMemoriaElement.className = "bloco_memoria";
+                blocoMemoriaElement.style = `background-color: ${cores[blocoMemoria.processo] || "transparent"}; height: ${height}%;`;
+                return blocoMemoriaElement;
+            }
             function atualizarDiscos(dados) {
                 const {discos} = dados;
                 let totalUtilizado = 0;
                 discosGraficoElement.innerHTML = '<div class="discos-centro"></div>';
-                discos.forEach(segmento => {
+                discos.forEach(segmento=>{
                     mostrarUtilizacaoDisco(segmento, totalUtilizado);
                     totalUtilizado += segmento.numeroDiscos;
-                });
+                }
+                );
             }
             function mostrarUtilizacaoDisco(segmento, totalUtilizado) {
                 let angulo = 90 * totalUtilizado;
-                for(let i = 0; i < segmento.numeroDiscos; i++) {
+                for (let i = 0; i < segmento.numeroDiscos; i++) {
                     discosGraficoElement.appendChild(criarSegmentoDiscoElement(segmento.processo, angulo));
                     angulo += 90;
                 }

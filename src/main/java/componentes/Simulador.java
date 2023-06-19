@@ -13,6 +13,7 @@ import java.util.*;
 public class Simulador {
     private Relatorio relatorio;
     private Discos discos;
+    private MemoriaPrincipal memoriaPrincipal;
     private SistemaOperacional so;
     private List<Processo> processos;
     private Cpu[] cpus;
@@ -21,7 +22,8 @@ public class Simulador {
     public Simulador(String arquivoEntrada) {
         this.relatorio = new Relatorio();
         this.discos = new Discos(4);
-        this.so = new SistemaOperacional(discos, relatorio);
+        this.memoriaPrincipal = new MemoriaPrincipal(32);
+        this.so = new SistemaOperacional(discos, memoriaPrincipal, relatorio);
         this.processos = lerEntradas(arquivoEntrada);
         this.cpus = new Cpu[4];
         for(int i = 0; i < cpus.length; i++) this.cpus[i] = new Cpu(so, i);
@@ -45,6 +47,7 @@ public class Simulador {
                 cpu.atualizarProcessos();
             }
             so.alocarDiscos();
+            relatorio.getBlocoTimelineAtual().registrarMemoriaPrincipal(memoriaPrincipal);
             relatorio.getBlocoTimelineAtual().registrarProgresso(processos);
             relatorio.getBlocoTimelineAtual().registrarDiscos(discos);
             relatorio.getBlocoTimelineAtual().registrarFilas(so);

@@ -13,14 +13,17 @@ public class SistemaOperacional {
     private int contadorIo;
 
     private Discos discos;
+    private MemoriaPrincipal memoriaPrincipal;
+    private Queue filaProntoSuspenso;
 
 
-    public SistemaOperacional(Discos discos, Relatorio relatorio) {
+    public SistemaOperacional(Discos discos, MemoriaPrincipal memoriaPrincipal, Relatorio relatorio) {
         this.escalonador = new Escalonador(this, 2);
         this.relatorio = relatorio;
         this.filaIo = new ArrayList<>();
         this.contadorIo = 0;
         this.discos = discos;
+        this.memoriaPrincipal = memoriaPrincipal;
     }
 
     public void requisitarIo(Processo processo) {
@@ -63,8 +66,21 @@ public class SistemaOperacional {
     }
 
     public void inicializarProcesso(Processo processo) {
-        relatorio.registrarEvento(processo.getNome() + ": NOVO - PRONTO");
-        escalonador.adicionarProcesso(processo);
+        if(memoriaPrincipal.temEspacoDisponivel(processo)) {
+            memoriaPrincipal.alocar(processo);
+            memoriaPrincipal.organizarSegmentos();
+            relatorio.registrarEvento(processo.getNome() + ": NOVO - PRONTO");
+            System.out.println(
+                "PROCESSO INICIALIZADO: " + processo.getNome() + " (ESPAÇO DISPONIVEL: " +
+                memoriaPrincipal.getEspacoDisponivel() + ")"
+            );
+            escalonador.adicionarProcesso(processo);
+        }
+    }
+
+    public void finalizarProcesso(Processo processo) {
+        memoriaPrincipal.desalocar(processo);
+        memoriaPrincipal.organizarSegmentos();
     }
 
     public Escalonador getEscalonador() {
